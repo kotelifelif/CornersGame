@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include <SFML/Graphics.hpp>
 
@@ -26,8 +27,10 @@ vector<Figure> InitializeFigures(const Texture &texture, const IntRect &rectangl
 
 int main()
 {
-
-	RenderWindow window(VideoMode(500, 500), "The Game!");
+	constexpr int kWindowWidth = 500;
+	constexpr int kWindowHeight = 500;
+	const string kWindowName("The Corners game");
+	RenderWindow window(VideoMode(kWindowWidth, kWindowHeight), kWindowName);
 
 	// Texture and Sprite for board
 	Texture board_texture;	
@@ -38,13 +41,21 @@ int main()
 	Texture figure_texture;
 	figure_texture.loadFromFile("../images/figures.png");
 	
-	// Sprite for black figure
-	Sprite black_figure_sprite(figure_texture, IntRect(294, 6, 28, 50));
-	vector<Figure> black_figures = InitializeFigures(figure_texture, IntRect(294, 6, 28, 50), Vector2i(42, 31));
+	// Create person player
+	constexpr int kPersonFigureStartPositionX = 294;
+	constexpr int kPersonFigureStartPositionY = 6;
+	constexpr int kPersonPositionInCellX = 42;
+	constexpr int kPersonPositionInCellY = 31;
+	constexpr int kFigureWidth = 28;
+	constexpr int kFigureHeight = 50;
+	Player person_player(InitializeFigures(figure_texture, IntRect(kPersonFigureStartPositionX, kPersonFigureStartPositionY, kFigureWidth, kFigureHeight), Vector2i(kPersonPositionInCellX, kPersonPositionInCellY)));
 
-	// Sprite for white figure
-	Sprite white_figure_sprite(figure_texture, IntRect(294, 62, 28, 50));
-	vector<Figure> white_figures = InitializeFigures(figure_texture, IntRect(294, 62, 28, 50), Vector2i(322, 311));
+	// Create ai_player
+	constexpr int kAiFigureStartPositionX = 294;
+	constexpr int kAiFigureStartPositionY = 62;
+	constexpr int kAiPositionInCellX = 322;
+	constexpr int kAiPositionInCellY = 311;
+	Player ai_player(InitializeFigures(figure_texture, IntRect(kAiFigureStartPositionX, kAiFigureStartPositionY, kFigureWidth, kFigureHeight), Vector2i(kAiPositionInCellX, kAiPositionInCellY)));
 
 	while (window.isOpen())
 	{
@@ -64,14 +75,9 @@ int main()
 
 		window.clear(Color::White);
 		window.draw(boardSprite);
-
-		for (Figure &black_figure : black_figures) {
-			black_figure.Draw(window);
-		}
-
-		for (Figure& white_figure : white_figures) {
-			white_figure.Draw(window);
-		}
+		
+		ai_player.Draw(window);
+		person_player.Draw(window);
 
 		window.display();
 	}

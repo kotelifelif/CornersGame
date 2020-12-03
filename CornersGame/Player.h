@@ -7,8 +7,8 @@ class Player
 {
 public:
 	Player(const std::vector<Figure>& figures);
-	void Draw();
+	void Draw(RenderWindow& window) const;
 private:
-	std::vector<Figure> figures;
+	std::vector<Figure> figures_;
 };
 

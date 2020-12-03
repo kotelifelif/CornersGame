@@ -12,7 +12,7 @@ public:
 	Figure(const Texture& texture, const IntRect &rectangle, const Vector2f &offset);
 	void Draw(RenderWindow &window) const;
 private:
-	Sprite sprite;
-	Texture texture;
+	Sprite sprite_;
+	Texture texture_;
 };
 
