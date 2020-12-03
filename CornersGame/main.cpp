@@ -8,13 +8,27 @@ using namespace std;
 int main()
 {
 
-	RenderWindow window(VideoMode(320, 480), "The Game!");
+	RenderWindow window(VideoMode(500, 500), "The Game!");
 
+	// Texture and Sprite for board
+	Texture boardTexture;	
+	boardTexture.loadFromFile("../images/board.png");
+	Sprite boardSprite(boardTexture);
 
+	// Texture for figure
+	Texture figureTexture;
+	figureTexture.loadFromFile("../images/figures.png");
+	
+	// Sprite for black figure
+	Sprite blackFigureSprite(figureTexture, IntRect(294, 6, 28, 50));
+	blackFigureSprite.move(250, 250);
+
+	// Sprite for white figure
+	Sprite whiteFigureSprite(figureTexture, IntRect(294, 62, 28, 50));
+	whiteFigureSprite.move(400, 400);
 
 	while (window.isOpen())
 	{
-
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -30,6 +44,9 @@ int main()
 
 
 		window.clear(Color::White);
+		window.draw(boardSprite);
+		window.draw(blackFigureSprite);
+		window.draw(whiteFigureSprite);
 		window.display();
 	}
 

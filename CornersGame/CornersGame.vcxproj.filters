@@ -19,4 +19,12 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\images\board.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="..\images\figures.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
