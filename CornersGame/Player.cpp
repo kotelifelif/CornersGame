@@ -1,4 +1,8 @@
 #include "Player.h"
+#include "Board.h"
+
+#include <algorithm>
+#include <iostream>
 
 #include <SFML/Graphics.hpp> 
 
@@ -16,3 +20,20 @@ void Player::Draw(RenderWindow& window) const
 		figure.Draw(window);
 	}
 }
+
+std::vector<Figure> Player::GetFigures() const
+{
+	return figures_;
+}
+
+Figure Player::GetFigure(const int position) const
+{
+	return figures_.at(position);
+}
+
+void Player::SetFigurePosition(const int figure_number, const Vector2f& screen_position)
+{
+	figures_.at(figure_number).SetPosition(screen_position);
+}
+
+
