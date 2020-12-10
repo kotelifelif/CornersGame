@@ -13,5 +13,6 @@ public:
 	void SetFigurePosition(const int figure_number, const Vector2f &screen_position);
 private:
 	std::vector<Figure> figures_;
+
 };
 

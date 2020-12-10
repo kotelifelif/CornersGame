@@ -4,9 +4,10 @@ Figure::Figure()
 {
 }
 
-Figure::Figure(const Texture& texture, const IntRect& rectangle, const Vector2f& offset) :
+Figure::Figure(const Texture& texture, const IntRect& rectangle, const Vector2f& offset, const Cell& target_cell_) :
 	texture_(texture),
-	sprite_(texture, rectangle)
+	sprite_(texture, rectangle),
+	target_cell_(target_cell_)
 {
 	sprite_.move(offset);
 }
@@ -29,4 +30,14 @@ Vector2f Figure::getPosition() const
 Sprite Figure::GetSprite() const
 {
 	return sprite_;
+}
+
+void Figure::SetTargetCell(const Cell& cell)
+{
+	target_cell_ = cell;
+}
+
+Cell Figure::GetTargetCell()
+{
+	return target_cell_;
 }
