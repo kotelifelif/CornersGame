@@ -146,10 +146,15 @@
   <ItemGroup>
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="GameContext.cpp" />
     <ClCompile Include="Figure.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="WinnerState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\board.png" />
@@ -159,9 +164,17 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="GameContext.h" />
     <ClInclude Include="Figure.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="WinnerState.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\fonts\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,30 @@
+#pragma once
+#include "State.h"
+#include "Board.h"
+#include "Player.h"
+#include "AI.h"
+
+#include <vector>
+
+#include <SFML/Graphics.hpp>
+
+using namespace sf;
+using namespace std;
+
+class MenuState : public State
+{
+public:
+	MenuState();
+	virtual ~MenuState();
+	void Draw(RenderWindow& window) override;
+	GameStateType Update(Event& event, RenderWindow& window) override;
+private:
+	Font font_;
+	sf::Text text_;
+	Texture board_texture_;
+	Texture figure_texture_;
+	Figure white_figure_;
+	Figure black_figure_;
+	Board board_;
+};
+

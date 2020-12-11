@@ -6,6 +6,7 @@
 class Player
 {
 public:
+	Player();
 	Player(const std::vector<Figure>& figures);
 	void Draw(RenderWindow& window) const;
 	std::vector<Figure> GetFigures() const;

@@ -9,6 +9,10 @@
 using namespace std;
 using namespace sf;
 
+Player::Player()
+{
+}
+
 Player::Player(const vector<Figure>& figures) :
 	figures_(figures)
 {
