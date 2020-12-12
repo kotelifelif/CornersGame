@@ -148,7 +148,6 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="GameContext.cpp" />
     <ClCompile Include="Figure.cpp" />
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuState.cpp" />
@@ -166,7 +165,6 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="Figure.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Player.h" />

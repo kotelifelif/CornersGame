@@ -1,9 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-using namespace sf;
-using namespace std;
-
 enum class GameStateType
 {
 	kNoState,
@@ -18,7 +15,7 @@ class State
 public:
 	State() = default;
 	virtual ~State() = default;
-	virtual void Draw(RenderWindow& window) = 0;
-	virtual GameStateType Update(Event& event, RenderWindow& window) = 0;
+	virtual void Draw(sf::RenderWindow& window) = 0;
+	virtual GameStateType Update(sf::Event& event, sf::RenderWindow& window) = 0;
 };
 

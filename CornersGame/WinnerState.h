@@ -8,20 +8,17 @@
 
 #include <SFML/Graphics.hpp>
 
-using namespace sf;
-using namespace std;
-
 class WinnerState : public State
 {
 public:
 	WinnerState();
 	virtual ~WinnerState();
-	void Draw(RenderWindow& window) override;
-	GameStateType Update(Event& event, RenderWindow& window) override;
+	void Draw(sf::RenderWindow& window) override;
+	GameStateType Update(sf::Event& event, sf::RenderWindow& window) override;
 private:
-	Font font_;
+	sf::Font font_;
 	sf::Text congratulatory_text_;
 	sf::Text menu_text_;
-	Texture board_texture_;
+	sf::Texture board_texture_;
 	Board board_;
 };

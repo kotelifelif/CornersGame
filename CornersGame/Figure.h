@@ -5,26 +5,23 @@
 
 #include <SFML/Graphics.hpp>
 
-using namespace sf;
-using namespace std;
-
 class Figure
 {
 public:
 	Figure();
-	Figure(const Texture& texture, const IntRect& rectangle, const Vector2f& offset, const Cell& target_cell_ = Cell());
-	void Draw(RenderWindow &window) const;
+	Figure(const sf::Texture& texture, const sf::IntRect& rectangle, const sf::Vector2f& offset, const Cell& target_cell_ = Cell());
+	void Draw(sf::RenderWindow &window) const;
 	
-	void SetPosition(const Vector2f& position);
-	Vector2f getPosition() const;
+	void SetPosition(const sf::Vector2f& position);
+	sf::Vector2f GetPosition() const;
 
-	Sprite GetSprite() const;
+	sf::Sprite GetSprite() const;
 
 	void SetTargetCell(const Cell& cell);
 	Cell GetTargetCell();
 private:
-	Sprite sprite_;
-	Texture texture_;
+	sf::Sprite sprite_;
+	sf::Texture texture_;
 	Cell target_cell_;
 	Cell temporary_target_cell_;
 };

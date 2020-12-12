@@ -1,13 +1,15 @@
 #pragma once
 #include "State.h"
 
+#include <SFML/Graphics.hpp>
+
 class GameContext
 {
 public:
 	GameContext(State* state);
 	~GameContext();
-	void Draw(RenderWindow& window);
-	void Update(Event& event, RenderWindow& window);
+	void Draw(sf::RenderWindow& window);
+	void Update(sf::Event& event, sf::RenderWindow& window);
 	void ChangeStateType(State* state);
 private:
 	State* state_;
