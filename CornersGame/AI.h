@@ -9,7 +9,7 @@
 class AI
 {
 public:
-	std::pair<sf::Vector2i, int> FindBestMove(Board& board, Player& player);
-	std::vector<Cell> GetShortestPath(Board& board, Cell source_cell, Cell destination_cell);
+	std::pair<sf::Vector2i, int> FindBestMove(const Board& board, const Player& player);
+	std::vector<Cell> GetShortestPath(const Board& board, const Cell &source_cell, const Cell &destination_cell);
 };
 

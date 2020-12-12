@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 
-WinnerState::WinnerState() {
+WinnerState::WinnerState(const bool is_player_win) {
   // Texture and Sprite for board
   board_texture_.loadFromFile("../images/board.png");
   board_ = Board(board_texture_, sf::Vector2i(constants::kInitialPositionX,
@@ -10,19 +10,28 @@ WinnerState::WinnerState() {
 
   font_.loadFromFile("../fonts/arial.ttf");
   congratulatory_text_.setFont(font_);
-  // Or computer?
-  congratulatory_text_.setString(L"Вы победили!");
+
+  if (is_player_win) {
+    congratulatory_text_.setString(L"Вы победили!");
+  } else {
+    congratulatory_text_.setString(L"Победил компьютер!");
+  }
+
   congratulatory_text_.setCharacterSize(24);
   congratulatory_text_.setPosition(sf::Vector2f(
-      constants::kPersonPositionInCellX + 2 * constants::kCellSizeX,
-      constants::kPersonPositionInCellY + 3 * constants::kCellSizeY));
+      constants::kBlackPositionInCellX +
+          constants::kCongratulatoryTextOffsetX * constants::kCellSizeX,
+      constants::kBlackPositionInCellY +
+          constants::kCongratulatoryTextOffsetY * constants::kCellSizeY));
 
   menu_text_.setFont(font_);
   menu_text_.setString(L"Перейти в меню");
-  menu_text_.setCharacterSize(24);
-  menu_text_.setPosition(sf::Vector2f(
-      constants::kPersonPositionInCellX + 2 * constants::kCellSizeX,
-      constants::kPersonPositionInCellY + 4 * constants::kCellSizeY));
+  menu_text_.setCharacterSize(constants::kFontSize);
+  menu_text_.setPosition(
+      sf::Vector2f(constants::kBlackPositionInCellX +
+                       constants::kMenuTextOffsetX * constants::kCellSizeX,
+                   constants::kBlackPositionInCellY +
+                       constants::kMenuTextOffsetY * constants::kCellSizeY));
 }
 
 WinnerState::~WinnerState() {}

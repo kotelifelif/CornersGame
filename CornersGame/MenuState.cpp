@@ -14,28 +14,33 @@ MenuState::MenuState() {
 
   black_figure_ = Figure(
       figure_texture_,
-      sf::IntRect(constants::kPersonFigureStartPositionX,
-                  constants::kPersonFigureStartPositionY,
+      sf::IntRect(constants::kBlackFigureStartPositionX,
+                  constants::kBlackFigureStartPositionY,
                   constants::kFigureWidth, constants::kFigureHeight),
       sf::Vector2f(
-          constants::kPersonPositionInCellX + 3 * constants::kCellSizeX,
-          constants::kPersonPositionInCellY + 4 * constants::kCellSizeY));
+          constants::kBlackPositionInCellX +
+              constants::kMenuBlackFigureOffsetX * constants::kCellSizeX,
+          constants::kBlackPositionInCellY +
+              constants::kMenuBlackFigureOffsetY * constants::kCellSizeY));
+  
   white_figure_ = Figure(
       figure_texture_,
-      sf::IntRect(constants::kAiFigureStartPositionX,
-                  constants::kAiFigureStartPositionY, constants::kFigureWidth,
-                  constants::kFigureHeight),
+      sf::IntRect(constants::kWhiteFigureStartPositionX,
+                  constants::kWhiteFigureStartPositionY,
+                  constants::kFigureWidth, constants::kFigureHeight),
       sf::Vector2f(
-          constants::kPersonPositionInCellX + 4 * constants::kCellSizeX,
-          constants::kPersonPositionInCellY + 4 * constants::kCellSizeY));
+          constants::kBlackPositionInCellX +
+              constants::kMenuWhiteFigureOffsetX * constants::kCellSizeX,
+          constants::kBlackPositionInCellY +
+              constants::kMenuWhiteFigureOffsetY * constants::kCellSizeY));
 
   font_.loadFromFile("../fonts/arial.ttf");
   text_.setFont(font_);
   text_.setString(L"Выбери фигуру");
   text_.setCharacterSize(24);
   text_.setPosition(sf::Vector2f(
-      constants::kPersonPositionInCellX + 2 * constants::kCellSizeX,
-      constants::kPersonPositionInCellY + 3 * constants::kCellSizeY));
+      constants::kBlackPositionInCellX + 2 * constants::kCellSizeX,
+      constants::kBlackPositionInCellY + 3 * constants::kCellSizeY));
 }
 
 MenuState::~MenuState() {}

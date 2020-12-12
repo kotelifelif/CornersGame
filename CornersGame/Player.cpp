@@ -2,7 +2,6 @@
 #include "Board.h"
 
 #include <algorithm>
-#include <iostream>
 
 #include <SFML/Graphics.hpp> 
 

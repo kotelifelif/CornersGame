@@ -11,7 +11,7 @@
 class WinnerState : public State
 {
 public:
-	WinnerState();
+	WinnerState(const bool is_player_win);
 	virtual ~WinnerState();
 	void Draw(sf::RenderWindow& window) override;
 	GameStateType Update(sf::Event& event, sf::RenderWindow& window) override;

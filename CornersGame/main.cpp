@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Board.h"
 #include "AI.h"
+
 #include "GameState.h"
 #include "MenuState.h"
 #include "WinnerState.h"
@@ -23,7 +24,9 @@ int main() {
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) window.close();
+      if (event.type == sf::Event::Closed) {
+        window.close();
+      }
       context.Update(event, window);
     }
 

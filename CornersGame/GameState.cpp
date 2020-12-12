@@ -5,7 +5,12 @@
 
 #include "Constants.h"
 
-GameState::GameState(bool is_white) : is_white_(is_white), ai() {
+GameState::GameState(bool is_white)
+    : is_white_(is_white),
+      ai_(),
+      x_offset_(0),
+      y_offset_(0),
+      figure_number_(0) {
   // Texture and Sprite for board
   board_texture_.loadFromFile("../images/board.png");
   board_ = Board(board_texture_, sf::Vector2i(constants::kInitialPositionX,
@@ -19,41 +24,41 @@ GameState::GameState(bool is_white) : is_white_(is_white), ai() {
     // Create person player
     person_player_ = Player(InitializeFigures(
         figure_texture_,
-        sf::IntRect(constants::kAiFigureStartPositionX,
-                    constants::kAiFigureStartPositionY, constants::kFigureWidth,
-                    constants::kFigureHeight),
-        sf::Vector2i(constants::kAiPositionInCellX,
-                     constants::kAiPositionInCellY),
+        sf::IntRect(constants::kWhiteFigureStartPositionX,
+                    constants::kWhiteFigureStartPositionY,
+                    constants::kFigureWidth, constants::kFigureHeight),
+        sf::Vector2i(constants::kWhitePositionInCellX,
+                     constants::kWhitePositionInCellY),
         board_, false));
     ;
     // Create ai_player
     ai_player_ = Player(InitializeFigures(
         figure_texture_,
-        sf::IntRect(constants::kPersonFigureStartPositionX,
-                    constants::kPersonFigureStartPositionY,
+        sf::IntRect(constants::kBlackFigureStartPositionX,
+                    constants::kBlackFigureStartPositionY,
                     constants::kFigureWidth, constants::kFigureHeight),
-        sf::Vector2i(constants::kPersonPositionInCellX,
-                     constants::kPersonPositionInCellY),
+        sf::Vector2i(constants::kBlackPositionInCellX,
+                     constants::kBlackPositionInCellY),
         board_, true));
   } else {
     is_player_move_ = false;
     // Create person player
     person_player_ = Player(InitializeFigures(
         figure_texture_,
-        sf::IntRect(constants::kPersonFigureStartPositionX,
-                    constants::kPersonFigureStartPositionY,
+        sf::IntRect(constants::kBlackFigureStartPositionX,
+                    constants::kBlackFigureStartPositionY,
                     constants::kFigureWidth, constants::kFigureHeight),
-        sf::Vector2i(constants::kPersonPositionInCellX,
-                     constants::kPersonPositionInCellY),
+        sf::Vector2i(constants::kBlackPositionInCellX,
+                     constants::kBlackPositionInCellY),
         board_, true));
     // Create ai_player
     ai_player_ = Player(InitializeFigures(
         figure_texture_,
-        sf::IntRect(constants::kAiFigureStartPositionX,
-                    constants::kAiFigureStartPositionY, constants::kFigureWidth,
-                    constants::kFigureHeight),
-        sf::Vector2i(constants::kAiPositionInCellX,
-                     constants::kAiPositionInCellY),
+        sf::IntRect(constants::kWhiteFigureStartPositionX,
+                    constants::kWhiteFigureStartPositionY,
+                    constants::kFigureWidth, constants::kFigureHeight),
+        sf::Vector2i(constants::kWhitePositionInCellX,
+                     constants::kWhitePositionInCellY),
         board_, false));
   }
 }
@@ -74,17 +79,14 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
         sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
         std::vector<Figure> person_figures = person_player_.GetFigures();
         for (size_t i = 0; i < person_figures.size(); ++i) {
-          auto rect = person_figures[i].GetSprite().getGlobalBounds();
           if (person_figures[i].GetSprite().getGlobalBounds().contains(
                   mouse_position.x, mouse_position.y)) {
-            n = i;
-            // is_player_move_ = true;
-            new_figure = person_figures[i];
-            dx = mouse_position.x -
-                 person_figures[i].GetSprite().getPosition().x;
-            dy = mouse_position.y -
-                 person_figures[i].GetSprite().getPosition().y;
-            old_position = person_figures[i].GetSprite().getPosition();
+            figure_number_ = i;
+            x_offset_ = mouse_position.x -
+                       person_figures[i].GetSprite().getPosition().x;
+            y_offset_ = mouse_position.y -
+                       person_figures[i].GetSprite().getPosition().y;
+            old_position_ = person_figures[i].GetSprite().getPosition();
           }
         }
       }
@@ -92,30 +94,26 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
 
     if (event.type == sf::Event::MouseButtonReleased) {
       if (event.key.code == sf::Mouse::Left) {
-        sf::Vector2f p = new_figure.GetSprite().getPosition();
-        new_position = sf::Vector2f(sf::Mouse::getPosition(window));
-        // Maybe Vector2i
-        std::pair<int, int> old_position_coordinates =
-            board_.GetPointLocation(old_position);
-        std::pair<int, int> mouse_position_coordinates =
-            board_.GetPointLocation(
-                sf::Vector2f(sf::Mouse::getPosition(window)));
-        dx = abs(mouse_position_coordinates.first -
-                 old_position_coordinates.first);
-        dy = abs(mouse_position_coordinates.second -
-                 old_position_coordinates.second);
-        if ((!board_.GetBusy(new_position)) &&
-            ((dx == 1 && dy == 0) || (dy == 1 && dx == 0))) {
-          board_.SetBusy(old_position, false);
-          board_.SetBusy(new_position, true);
-          board_.SetCollor(old_position, FigureColor::kNone);
+        new_position_ = sf::Vector2f(sf::Mouse::getPosition(window));
+
+        sf::Vector2i old_position_coordinates =
+            board_.GetPointLocation(old_position_);
+        sf::Vector2i mouse_position_coordinates = board_.GetPointLocation(
+            sf::Vector2f(sf::Mouse::getPosition(window)));
+        x_offset_ = abs(mouse_position_coordinates.x - old_position_coordinates.x);
+        y_offset_ = abs(mouse_position_coordinates.y - old_position_coordinates.y);
+        if ((!board_.GetBusy(new_position_)) &&
+            ((x_offset_ == 1 && y_offset_ == 0) || (y_offset_ == 1 && x_offset_ == 0))) {
+          board_.SetBusy(old_position_, false);
+          board_.SetBusy(new_position_, true);
+          board_.SetCollor(old_position_, FigureColor::kNone);
           if (is_white_) {
-            board_.SetCollor(new_position, FigureColor::kWhite);
+            board_.SetCollor(new_position_, FigureColor::kWhite);
           } else {
-            board_.SetCollor(new_position, FigureColor::kBlack);
+            board_.SetCollor(new_position_, FigureColor::kBlack);
           }
-          new_position = board_.ConvertToBoardPosition(new_position);
-          person_player_.SetFigurePosition(n, new_position);
+          new_position_ = board_.ConvertToBoardPosition(new_position_);
+          person_player_.SetFigurePosition(figure_number_, new_position_);
           is_player_move_ = false;
         }
       }
@@ -123,66 +121,30 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
 
     if (event.type == sf::Event::KeyPressed) {
       if (event.key.code == sf::Keyboard::Up) {
-        sf::Vector2f p = new_figure.GetSprite().getPosition();
-        new_position = sf::Vector2f(p.x, p.y - constants::kCellSizeY);
-        if (!board_.GetBusy(new_position)) {
-          board_.SetBusy(old_position, false);
-          board_.SetBusy(new_position, true);
-          person_player_.SetFigurePosition(n, new_position);
-          is_player_move_ = false;
-        }
-
-      } else if (event.key.code == sf::Keyboard::Left) {
-        sf::Vector2f p = new_figure.GetSprite().getPosition();
-        new_position = sf::Vector2f(p.x - constants::kCellSizeX, p.y);
-        if (!board_.GetBusy(new_position)) {
-          board_.SetBusy(old_position, false);
-          board_.SetBusy(new_position, true);
-          person_player_.SetFigurePosition(n, new_position);
-          is_player_move_ = false;
-        }
-
-      } else if (event.key.code == sf::Keyboard::Right) {
-        sf::Vector2f p = new_figure.GetSprite().getPosition();
-        new_position = sf::Vector2f(p.x + constants::kCellSizeX, p.y);
-        if (!board_.GetBusy(new_position)) {
-          board_.SetBusy(old_position, false);
-          board_.SetBusy(new_position, true);
-          person_player_.SetFigurePosition(n, new_position);
-          is_player_move_ = false;
-        }
-
+        return GameStateType::kComputerWinnerState;
       } else if (event.key.code == sf::Keyboard::Down) {
-        return GameStateType::kWinnerState;
-        sf::Vector2f p = new_figure.GetSprite().getPosition();
-        new_position = sf::Vector2f(p.x, p.y + constants::kCellSizeY);
-        if (!board_.GetBusy(new_position)) {
-          board_.SetBusy(old_position, false);
-          board_.SetBusy(new_position, true);
-          person_player_.SetFigurePosition(n, new_position);
-          is_player_move_ = false;
-        }
+        return GameStateType::kPlayerWinnerState;
       }
     }
   } else {
     std::vector<Figure> ai_figures = ai_player_.GetFigures();
     std::pair<sf::Vector2i, int> optimal_path =
-        ai.FindBestMove(board_, ai_player_);
+        ai_.FindBestMove(board_, ai_player_);
 
     Cell position = board_.GetCell(optimal_path.first.x, optimal_path.first.y);
-    sf::Vector2f figure_position(position.rectangle.left + constants::kXOffset,
-                                 position.rectangle.top + constants::kYOffset);
+    new_position_ = sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                                position.rectangle.top + constants::kYOffset);
 
     board_.SetBusy(ai_figures[optimal_path.second].GetPosition(), false);
     board_.SetCollor(ai_figures[optimal_path.second].GetPosition(),
                      FigureColor::kNone);
-    ai_player_.SetFigurePosition(optimal_path.second, figure_position);
+    ai_player_.SetFigurePosition(optimal_path.second, new_position_);
 
-    board_.SetBusy(figure_position, true);
+    board_.SetBusy(new_position_, true);
     if (is_white_) {
-      board_.SetCollor(figure_position, FigureColor::kWhite);
+      board_.SetCollor(new_position_, FigureColor::kWhite);
     } else {
-      board_.SetCollor(figure_position, FigureColor::kBlack);
+      board_.SetCollor(new_position_, FigureColor::kBlack);
     }
 
     is_player_move_ = true;
@@ -194,7 +156,7 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
 
 std::vector<Figure> GameState::InitializeFigures(
     const sf::Texture& texture, const sf::IntRect& rectangle,
-    const sf::Vector2i& initial_position, Board& board, bool is_left_top) {
+    const sf::Vector2i& initial_position, Board& board, const bool is_left_top) {
   std::vector<Figure> figures;
   for (int i = 0; i < constants::kFigureRows; ++i) {
     for (int j = 0; j < constants::kFigureColumns; ++j) {
@@ -236,7 +198,7 @@ GameStateType GameState::CheckWinner() {
 
   if (figures_in_target_cell_count ==
       constants::kFigureRows * constants::kFigureColumns) {
-    return GameStateType::kWinnerState;
+    return GameStateType::kPlayerWinnerState;
   }
 
   figures_in_target_cell_count = 0;
@@ -249,7 +211,7 @@ GameStateType GameState::CheckWinner() {
 
   if (figures_in_target_cell_count ==
       constants::kFigureRows * constants::kFigureColumns) {
-    return GameStateType::kWinnerState;
+    return GameStateType::kComputerWinnerState;
   }
 
   return GameStateType::kNoState;

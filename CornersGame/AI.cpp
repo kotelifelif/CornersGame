@@ -8,13 +8,13 @@
 #include "Constants.h"
 
 
-std::pair<sf::Vector2i, int> AI::FindBestMove(Board& board, Player& player) {
+std::pair<sf::Vector2i, int> AI::FindBestMove(const Board& board,
+                                              const Player& player) {
   sf::Vector2i best_move(0, 0);
 
   std::vector<Figure> figures = player.GetFigures();
   int shortest_path_length = constants::kRows * constants::kColumns;
   int figure_number = -1;
-  int evaluation = 0;
   Cell figure_cell;
   std::vector<Cell> path;
   for (int i = 0; i < figures.size(); ++i) {
@@ -24,15 +24,16 @@ std::pair<sf::Vector2i, int> AI::FindBestMove(Board& board, Player& player) {
       shortest_path_length = path.size();
       figure_number = i;
       auto coordinats = board.GetCellCoordinats(*path.begin());
-      best_move = sf::Vector2i(coordinats.first, coordinats.second);
+      best_move = sf::Vector2i(coordinats.x, coordinats.y);
     }
   }
   return std::make_pair(best_move, figure_number);
 }
 
 // Implementation of Dijkstra algorithm
-std::vector<Cell> AI::GetShortestPath(Board& board, Cell source_cell,
-                                      Cell destination_cell) {
+std::vector<Cell> AI::GetShortestPath(const Board& board,
+                                      const Cell& source_cell,
+                                      const Cell& destination_cell) {
   std::vector<std::vector<Cell>> cells = board.GetCells();
   std::vector<std::vector<std::vector<Cell>>> adjacent_cells(cells.size());
   std::vector<std::vector<std::vector<int>>> cost(cells.size());
@@ -72,16 +73,17 @@ std::vector<Cell> AI::GetShortestPath(Board& board, Cell source_cell,
     }
   }
 
-  int max = constants::kRows * constants::kColumns;
+  int max_path_length = constants::kRows * constants::kColumns;
   std::vector<std::vector<int>> distances(
-      adjacent_cells.size(), std::vector<int>(adjacent_cells.size(), max));
-  std::vector<std::vector<Cell>> previous(
+      adjacent_cells.size(),
+      std::vector<int>(adjacent_cells.size(), max_path_length));
+  std::vector<std::vector<Cell>> previous_cells(
       adjacent_cells.size(), std::vector<Cell>(adjacent_cells.size(), Cell()));
   // priority by distance (first), second - vertex
   std::vector<std::pair<int, Cell>> processed;
 
-  std::pair<int, int> source_coordinats = board.GetCellCoordinats(source_cell);
-  distances[source_coordinats.first][source_coordinats.second] = 0;
+  sf::Vector2i source_coordinats = board.GetCellCoordinats(source_cell);
+  distances[source_coordinats.x][source_coordinats.y] = 0;
 
   for (int i = 0; i < adjacent_cells.size(); ++i) {
     for (int j = 0; j < adjacent_cells[i].size(); ++j) {
@@ -102,55 +104,54 @@ std::vector<Cell> AI::GetShortestPath(Board& board, Cell source_cell,
     auto coordinates = board.GetCellCoordinats(vertex);
     processed.pop_back();
 
-    for (int i = 0;
-         i < adjacent_cells[coordinates.first][coordinates.second].size();
+    for (int i = 0; i < adjacent_cells[coordinates.x][coordinates.y].size();
          ++i) {
-      Cell neighbor = adjacent_cells[coordinates.first][coordinates.second][i];
-      int neighbor_cost = cost[coordinates.first][coordinates.second][i];
+      Cell neighbor = adjacent_cells[coordinates.x][coordinates.y][i];
+      int neighbor_cost = cost[coordinates.x][coordinates.y][i];
 
       auto neighbor_coordinates = board.GetCellCoordinats(neighbor);
-      if (distances[neighbor_coordinates.first][neighbor_coordinates.second] >
-          distances[coordinates.first][coordinates.second] + neighbor_cost) {
-        distances[neighbor_coordinates.first][neighbor_coordinates.second] =
-            distances[coordinates.first][coordinates.second] + neighbor_cost;
+      if (distances[neighbor_coordinates.x][neighbor_coordinates.y] >
+          distances[coordinates.x][coordinates.y] + neighbor_cost) {
+        distances[neighbor_coordinates.x][neighbor_coordinates.y] =
+            distances[coordinates.x][coordinates.y] + neighbor_cost;
         // Maybe change
-        previous[neighbor_coordinates.first][neighbor_coordinates.second] =
-            vertex;
+        previous_cells[neighbor_coordinates.x][neighbor_coordinates.y] = vertex;
 
         // Change priority
         processed.push_back(std::make_pair(
-            distances[neighbor_coordinates.first][neighbor_coordinates.second],
+            distances[neighbor_coordinates.x][neighbor_coordinates.y],
             neighbor));
       }
     }
   }
 
   std::vector<Cell> path;
-  std::pair<int, int> destination_coordinats =
+  sf::Vector2i destination_coordinats =
       board.GetCellCoordinats(destination_cell);
 
   // Change for black and white case
   // If there are no path to destination cell
-  if (distances[destination_coordinats.first][destination_coordinats.second] ==
-      max) {
+  if (distances[destination_coordinats.x][destination_coordinats.y] ==
+      max_path_length) {
     for (size_t i = 0; i < constants::kRows; ++i) {
       for (size_t j = 0; j < constants::kColumns; ++j) {
-        if (distances[i][j] != max) {
-          destination_coordinats.first = i;
-          destination_coordinats.second = j;
+        if (distances[i][j] != max_path_length) {
+          destination_coordinats.x = i;
+          destination_coordinats.y = j;
           break;
         }
       }
     }
   }
 
-  Cell previous_cell = board.GetCell(destination_coordinats.first,
-                                     destination_coordinats.second);
+  Cell previous_cell =
+      board.GetCell(destination_coordinats.x, destination_coordinats.y);
   while (previous_cell != source_cell) {
     path.push_back(previous_cell);
-    auto previous_cell_coordinates = board.GetCellCoordinats(previous_cell);
-    previous_cell = previous[previous_cell_coordinates.first]
-                            [previous_cell_coordinates.second];
+    sf::Vector2i previous_cell_coordinates =
+        board.GetCellCoordinats(previous_cell);
+    previous_cell = previous_cells[previous_cell_coordinates.x]
+                                  [previous_cell_coordinates.y];
     previous_cell_coordinates = board.GetCellCoordinats(previous_cell);
   }
   std::reverse(path.begin(), path.end());

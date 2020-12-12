@@ -22,4 +22,4 @@ sf::Sprite Figure::GetSprite() const { return sprite_; }
 
 void Figure::SetTargetCell(const Cell& cell) { target_cell_ = cell; }
 
-Cell Figure::GetTargetCell() { return target_cell_; }
+Cell Figure::GetTargetCell() const { return target_cell_; }

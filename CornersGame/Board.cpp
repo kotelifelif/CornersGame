@@ -100,34 +100,34 @@ sf::Vector2f Board::ConvertToBoardPosition(const sf::Vector2f& point) {
   return sf::Vector2f();
 }
 
-std::pair<int, int> Board::GetPointLocation(const sf::Vector2f& point) const {
+sf::Vector2i Board::GetPointLocation(const sf::Vector2f& point) const {
   for (size_t i = 0; i < constants::kRows; ++i) {
     for (size_t j = 0; j < constants::kColumns; ++j) {
       if (cells_[i][j].rectangle.contains(point)) {
-        return std::make_pair(i, j);
+        return sf::Vector2i(i, j);
       }
     }
   }
-  return std::pair<int, int>();
+  return sf::Vector2i(-1, -1);
 }
 
-std::pair<int, int> Board::GetCellCoordinats(Cell cell) const {
+sf::Vector2i Board::GetCellCoordinats(Cell cell) const {
   for (size_t i = 0; i < cells_.size(); ++i) {
     for (size_t j = 0; j < cells_.size(); ++j) {
       if (cell == cells_[i][j]) {
-        return std::make_pair(i, j);
+        return sf::Vector2i(i, j);
       }
     }
   }
-  return std::pair<int, int>();
+  return sf::Vector2i(-1, -1);
 }
 
 std::vector<std::vector<Cell>> Board::GetCells() const { return cells_; }
 
-bool Cell::operator==(const Cell right) {
+bool Cell::operator==(const Cell& right) {
   return this->rectangle == right.rectangle;
 }
 
-bool Cell::operator!=(const Cell right) {
+bool Cell::operator!=(const Cell& right) {
   return this->rectangle != right.rectangle;
 }

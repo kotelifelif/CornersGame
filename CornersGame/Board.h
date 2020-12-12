@@ -16,9 +16,8 @@ struct Cell
 	bool is_busy;
 	sf::FloatRect rectangle;
 	FigureColor color;
-	std::pair<int, int> board_location;
-	bool operator==(const Cell right);
-	bool operator!=(const Cell right);
+	bool operator==(const Cell& right);
+	bool operator!=(const Cell& right);
 };
 
 class Board
@@ -41,8 +40,8 @@ public:
 	void SetCollor(const sf::Vector2f& point, const FigureColor color);
 	
 	sf::Vector2f ConvertToBoardPosition(const sf::Vector2f& point);
-	std::pair<int, int> GetPointLocation(const sf::Vector2f& point) const;
-	std::pair<int, int> GetCellCoordinats(const Cell cell) const;
+	sf::Vector2i GetPointLocation(const sf::Vector2f& point) const;
+	sf::Vector2i GetCellCoordinats(Cell cell) const;
 
 	std::vector <std::vector<Cell>> GetCells() const;
 private:

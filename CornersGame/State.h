@@ -7,7 +7,8 @@ enum class GameStateType
 	kMenuState,
 	kBlackGameState,
 	kWhiteGameState,
-	kWinnerState
+	kPlayerWinnerState,
+	kComputerWinnerState
 };
 
 class State
