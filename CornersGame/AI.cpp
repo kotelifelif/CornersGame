@@ -4,12 +4,19 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 #include "Constants.h"
 
 
-std::pair<sf::Vector2i, int> AI::FindBestMove(const Board& board,
-                                              const Player& player) {
+AI::AI(const bool is_black) : is_black_(is_black) {}
+
+int AI::FindBestMove(Board& board, Player& player, int depth) {
+  int score = GetHeuristic(board, player);
+  if (depth == 1) {
+    return score;
+  }
+
   sf::Vector2i best_move(0, 0);
 
   std::vector<Figure> figures = player.GetFigures();
@@ -17,17 +24,193 @@ std::pair<sf::Vector2i, int> AI::FindBestMove(const Board& board,
   int figure_number = -1;
   Cell figure_cell;
   std::vector<Cell> path;
+  int sum_distance = 1000;
   for (int i = 0; i < figures.size(); ++i) {
     figure_cell = board.GetCell(figures[i].GetPosition());
-    path = GetShortestPath(board, figure_cell, figures[i].GetTargetCell());
-    if (path.size() < shortest_path_length && !path.empty()) {
-      shortest_path_length = path.size();
-      figure_number = i;
-      auto coordinats = board.GetCellCoordinats(*path.begin());
-      best_move = sf::Vector2i(coordinats.x, coordinats.y);
+    sf::Vector2i figure_cell_coordinats = board.GetCellCoordinats(figure_cell);
+
+    if (figure_cell_coordinats.x - 1 >= 0) {
+      if (!board.GetCell(figure_cell_coordinats.x - 1, figure_cell_coordinats.y)
+               .is_busy) {
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        board.SetBusy(figure_cell_coordinats.x - 1, figure_cell_coordinats.y,
+                      true);
+        board.SetCollor(figure_cell_coordinats.x - 1, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        Cell position = board.GetCell(figure_cell_coordinats.x - 1,
+                                      figure_cell_coordinats.y);
+        sf::Vector2f new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+
+        // launch minimax algorithm
+        score = FindBestMove(board, player, depth + 1);
+        // check if new value is better
+        if (score < sum_distance) {
+          figure_number_ = i;
+          sum_distance = score;
+          move_ = Move::kLeft;
+          //destination_coordinats_ = sf::Vector2i(figure_cell_coordinats.x - 1,
+          //                                       figure_cell_coordinats.y);
+        }
+
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y, true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        board.SetBusy(figure_cell_coordinats.x - 1, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x - 1, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        position =
+            board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y);
+        new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+      }
+    }
+
+    if (figure_cell_coordinats.x + 1 < constants::kRows) {
+      if (!board.GetCell(figure_cell_coordinats.x + 1, figure_cell_coordinats.y)
+               .is_busy) {
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        board.SetBusy(figure_cell_coordinats.x + 1, figure_cell_coordinats.y,
+                      true);
+        board.SetCollor(figure_cell_coordinats.x + 1, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        Cell position = board.GetCell(figure_cell_coordinats.x + 1,
+                                      figure_cell_coordinats.y);
+        sf::Vector2f new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+
+        // launch minimax algorithm
+        score = FindBestMove(board, player, depth + 1);
+        // check if new value is better
+        if (score < sum_distance) {
+          figure_number_ = i;
+          sum_distance = score;
+          move_ = Move::kRight;
+          //destination_coordinats_ = sf::Vector2i(figure_cell_coordinats.x + 1,
+          //                                       figure_cell_coordinats.y);
+        }
+
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y, true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        board.SetBusy(figure_cell_coordinats.x + 1, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x + 1, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        position =
+            board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y);
+        new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+      }
+    }
+
+    if (figure_cell_coordinats.y - 1 >= 0) {
+      if (!board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y - 1)
+               .is_busy) {
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y - 1,
+                      true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y - 1,
+                        FigureColor::kWhite);
+        Cell position = board.GetCell(figure_cell_coordinats.x,
+                                      figure_cell_coordinats.y - 1);
+        sf::Vector2f new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+
+        // launch minimax algorithm
+        score = FindBestMove(board, player, depth + 1);
+        // check if new value is better
+        if (score < sum_distance) {
+          figure_number_ = i;
+          sum_distance = score;
+          move_ = Move::kDown;
+          //destination_coordinats_ = sf::Vector2i(figure_cell_coordinats.x,
+          //                                       figure_cell_coordinats.y - 1);
+        }
+
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y, true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y - 1,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y - 1,
+                        FigureColor::kNone);
+        position =
+            board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y);
+        new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+      }
+    }
+
+    if (figure_cell_coordinats.y + 1 < constants::kColumns) {
+      if (!board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y + 1)
+               .is_busy) {
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kNone);
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y + 1,
+                      true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y + 1,
+                        FigureColor::kWhite);
+        Cell position = board.GetCell(figure_cell_coordinats.x,
+                                      figure_cell_coordinats.y + 1);
+        sf::Vector2f new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+
+        // launch minimax algorithm
+        score = FindBestMove(board, player, depth + 1);
+        // check if new value is better
+        if (score < sum_distance) {
+          figure_number_ = i;
+          sum_distance = score;
+          move_ = Move::kUp;
+          //destination_coordinats_ = sf::Vector2i(figure_cell_coordinats.x,
+          //                                       figure_cell_coordinats.y + 1);
+        }
+
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y, true);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y,
+                        FigureColor::kWhite);
+        board.SetBusy(figure_cell_coordinats.x, figure_cell_coordinats.y + 1,
+                      false);
+        board.SetCollor(figure_cell_coordinats.x, figure_cell_coordinats.y + 1,
+                        FigureColor::kNone);
+        position =
+            board.GetCell(figure_cell_coordinats.x, figure_cell_coordinats.y);
+        new_position =
+            sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                         position.rectangle.top + constants::kYOffset);
+        player.SetFigurePosition(i, new_position);
+      }
     }
   }
-  return std::make_pair(best_move, figure_number);
+  // return std::make_pair(best_move, figure_number);
+  return sum_distance;
 }
 
 // Implementation of Dijkstra algorithm
@@ -157,4 +340,49 @@ std::vector<Cell> AI::GetShortestPath(const Board& board,
   std::reverse(path.begin(), path.end());
 
   return path;
+}
+
+std::pair<sf::Vector2i, int> AI::GetMove(Board& board, Player& player) const {
+  std::vector<Figure> figures = player.GetFigures();
+  Cell figure_cell = board.GetCell(figures[figure_number_].GetPosition());
+  sf::Vector2i figure_cell_coordinats = board.GetCellCoordinats(figure_cell);
+  switch (move_) {
+    case (Move::kDown):
+      figure_cell_coordinats.y--;
+      return std::make_pair(figure_cell_coordinats, figure_number_);
+    case (Move::kLeft):
+      figure_cell_coordinats.x--;
+      return std::make_pair(figure_cell_coordinats, figure_number_);
+    case (Move::kRight):
+      figure_cell_coordinats.x++;
+      return std::make_pair(figure_cell_coordinats, figure_number_);
+    case (Move::kUp):
+      figure_cell_coordinats.y++;
+      return std::make_pair(figure_cell_coordinats, figure_number_);
+  }
+  return std::make_pair(destination_coordinats_, figure_number_);
+}
+
+int AI::GetHeuristic(Board& board, Player& player) {
+  int result = constants::kRows * constants::kColumns;
+  std::vector<Figure> figures = player.GetFigures();
+  sf::Vector2i figure_coordinats;
+  sf::Vector2f figure_point;
+  for (Figure& figure : figures) {
+    figure_point = figure.GetPosition();
+    figure_coordinats = board.GetCellCoordinats(board.GetCell(figure_point));
+    for (int i = 0; i < constants::kFigureRows; ++i) {
+      for (int j = 0; j < constants::kFigureColumns; ++j) {
+        if (is_black_) {
+          result +=
+              sqrt(pow(figure_coordinats.x - (constants::kRows - i), 2) +
+                   pow(figure_coordinats.y - (constants::kColumns - j), 2));
+        } else {
+          result += sqrt(pow(figure_coordinats.x - i, 2) +
+                         pow(figure_coordinats.y - j, 2));
+        }
+      }
+    }
+  }
+  return result;
 }

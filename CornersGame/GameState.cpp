@@ -7,7 +7,7 @@
 
 GameState::GameState(bool is_white)
     : is_white_(is_white),
-      ai_(),
+      ai_(!is_white_),
       x_offset_(0),
       y_offset_(0),
       figure_number_(0) {
@@ -74,6 +74,7 @@ void GameState::Draw(sf::RenderWindow& window) {
 
 GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
   if (is_player_move_) {
+    window.setTitle("Your move!");
     if (event.type == sf::Event::MouseButtonPressed) {
       if (event.key.code == sf::Mouse::Left) {
         sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
@@ -127,9 +128,10 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
       }
     }
   } else {
+    window.setTitle("Computer move!");
     std::vector<Figure> ai_figures = ai_player_.GetFigures();
-    std::pair<sf::Vector2i, int> optimal_path =
-        ai_.FindBestMove(board_, ai_player_);
+    ai_.FindBestMove(board_, ai_player_, 0);
+    std::pair<sf::Vector2i, int> optimal_path = ai_.GetMove(board_, ai_player_);
 
     Cell position = board_.GetCell(optimal_path.first.x, optimal_path.first.y);
     new_position_ = sf::Vector2f(position.rectangle.left + constants::kXOffset,

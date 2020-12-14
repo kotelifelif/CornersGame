@@ -29,7 +29,6 @@ public:
 	void SetBusy(const int row, const int column, const bool is_busy);
 	bool GetBusy(const int row, const int column) const;
 	
-	// Maybe rename
 	bool GetBusy(const sf::Vector2f& point) const;
 	void SetBusy(const sf::Vector2f& point, const bool is_busy);
 
