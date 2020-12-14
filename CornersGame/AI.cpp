@@ -23,7 +23,8 @@ int AI::FindBestMove(Board& board, Player& player, int depth) {
   int figure_number = -1;
   Cell figure_cell;
   std::vector<Cell> path;
-  int sum_distance = 1000;
+  int sum_distance = constants::kRows * constants::kColumns *
+                     constants::kFigureColumns * constants::kFigureRows;
   for (int i = 0; i < figures.size(); ++i) {
     figure_cell = board.GetCell(figures[i].GetPosition());
     sf::Vector2i figure_cell_coordinats = board.GetCellCoordinats(figure_cell);
@@ -211,26 +212,32 @@ std::pair<sf::Vector2i, int> AI::GetMove(Board& board, Player& player) const {
 }
 
 int AI::GetHeuristic(Board& board, Player& player) {
-  int result = constants::kRows * constants::kColumns;
+  int result = 0;
   std::vector<Figure> figures = player.GetFigures();
   sf::Vector2i figure_coordinats;
   sf::Vector2f figure_point;
   for (Figure& figure : figures) {
     figure_point = figure.GetPosition();
     figure_coordinats = board.GetCellCoordinats(board.GetCell(figure_point));
-    for (int i = 0; i < constants::kFigureRows; ++i) {
-      for (int j = 0; j < constants::kFigureColumns; ++j) {
-        if (!is_black_) {
-          result +=
-              sqrt(pow(figure_coordinats.x - (constants::kRows - i - 1), 2) +
-                   pow(figure_coordinats.y - (constants::kColumns - j - 1), 2));
-        } else {
+    if (!is_black_) {
+      for (int i = constants::kRows - 1;
+           i > constants::kRows - constants::kFigureRows; --i) {
+        for (int j = constants::kColumns;
+             j > constants::kColumns - constants::kFigureColumns; --j) {
+          result += sqrt(pow(figure_coordinats.x - i, 2) +
+                         pow(figure_coordinats.y - j, 2));
+        }
+      }
+    } else {
+      for (int i = 0; i < constants::kFigureRows; ++i) {
+        for (int j = 0; j < constants::kFigureColumns; ++j) {
           result += sqrt(pow(figure_coordinats.x - i, 2) +
                          pow(figure_coordinats.y - j, 2));
         }
       }
     }
   }
+
   return result;
 }
 
@@ -241,12 +248,7 @@ int AI::CheckMove(Board& board, Player& player, sf::Vector2i& old_coordinates,
     board.SetBusy(old_coordinates.x, old_coordinates.y, false);
 
     board.SetBusy(new_coordinates.x, new_coordinates.y, true);
-
-    Cell position = board.GetCell(new_coordinates.x, new_coordinates.y);
-    sf::Vector2f new_position =
-        sf::Vector2f(position.rectangle.left + constants::kXOffset,
-                     position.rectangle.top + constants::kYOffset);
-    player.SetFigurePosition(i, new_position);
+    player.SetFigurePosition(board, i, new_coordinates.x, new_coordinates.y);
 
     // launch minimax algorithm
     score = FindBestMove(board, player, depth + 1);
@@ -259,13 +261,8 @@ int AI::CheckMove(Board& board, Player& player, sf::Vector2i& old_coordinates,
     }
 
     board.SetBusy(old_coordinates.x, old_coordinates.y, true);
-
     board.SetBusy(new_coordinates.x, new_coordinates.y, false);
-
-    position = board.GetCell(old_coordinates.x, old_coordinates.y);
-    new_position = sf::Vector2f(position.rectangle.left + constants::kXOffset,
-                                position.rectangle.top + constants::kYOffset);
-    player.SetFigurePosition(i, new_position);
+    player.SetFigurePosition(board, i, old_coordinates.x, old_coordinates.y);
   }
   return sum_distance;
 }
