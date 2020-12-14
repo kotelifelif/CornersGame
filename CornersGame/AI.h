@@ -31,6 +31,7 @@ class AI {
   sf::Vector2i destination_coordinats_;
   int GetHeuristic(Board& board, Player& player);
   int CheckMove(Board& board, Player& player, sf::Vector2i& old_coordinates,
-                sf::Vector2i& new_coordinates, int depth, int sum_distance, int i, int score);
+                 const sf::Vector2i& new_coordinates, int depth, int sum_distance,
+                 int i, int score, const Move move);
 };
 
