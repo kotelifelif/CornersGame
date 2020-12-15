@@ -1,9 +1,22 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "MenuState.h"
 
 #include "Constants.h"
 
 
-MenuState::MenuState() {
+MenuState::MenuState()
+    : kMenuXOffset(2),
+      kMenuYOffset(3),
+      kFontSize(24),
+      kMenuBlackFigureOffsetX(3),
+      kMenuBlackFigureOffsetY(4),
+      kMenuWhiteFigureOffsetX(4),
+      kMenuWhiteFigureOffsetY(4) {
+  
   // Texture and Sprite for board
   board_texture_.loadFromFile("../images/board.png");
   board_ = Board(board_texture_, sf::Vector2i(constants::kInitialPositionX,
@@ -12,35 +25,33 @@ MenuState::MenuState() {
   // Texture for white figure
   figure_texture_.loadFromFile("../images/figures.png");
 
-  black_figure_ = Figure(
-      figure_texture_,
-      sf::IntRect(constants::kBlackFigureStartPositionX,
-                  constants::kBlackFigureStartPositionY,
-                  constants::kFigureWidth, constants::kFigureHeight),
-      sf::Vector2f(
-          constants::kBlackPositionInCellX +
-              constants::kMenuBlackFigureOffsetX * constants::kCellSizeX,
-          constants::kBlackPositionInCellY +
-              constants::kMenuBlackFigureOffsetY * constants::kCellSizeY));
-  
-  white_figure_ = Figure(
-      figure_texture_,
-      sf::IntRect(constants::kWhiteFigureStartPositionX,
-                  constants::kWhiteFigureStartPositionY,
-                  constants::kFigureWidth, constants::kFigureHeight),
-      sf::Vector2f(
-          constants::kBlackPositionInCellX +
-              constants::kMenuWhiteFigureOffsetX * constants::kCellSizeX,
-          constants::kBlackPositionInCellY +
-              constants::kMenuWhiteFigureOffsetY * constants::kCellSizeY));
+  black_figure_ =
+      Figure(figure_texture_,
+             sf::IntRect(constants::kBlackFigureStartPositionX,
+                         constants::kBlackFigureStartPositionY,
+                         constants::kFigureWidth, constants::kFigureHeight),
+             sf::Vector2f(constants::kBlackPositionInCellX +
+                              kMenuBlackFigureOffsetX * constants::kCellSizeX,
+                          constants::kBlackPositionInCellY +
+                              kMenuBlackFigureOffsetY * constants::kCellSizeY));
+
+  white_figure_ =
+      Figure(figure_texture_,
+             sf::IntRect(constants::kWhiteFigureStartPositionX,
+                         constants::kWhiteFigureStartPositionY,
+                         constants::kFigureWidth, constants::kFigureHeight),
+             sf::Vector2f(constants::kBlackPositionInCellX +
+                              kMenuWhiteFigureOffsetX * constants::kCellSizeX,
+                          constants::kBlackPositionInCellY +
+                              kMenuWhiteFigureOffsetY * constants::kCellSizeY));
 
   font_.loadFromFile("../fonts/arial.ttf");
   text_.setFont(font_);
   text_.setString(L"Выбери фигуру");
-  text_.setCharacterSize(24);
+  text_.setCharacterSize(kFontSize);
   text_.setPosition(sf::Vector2f(
-      constants::kBlackPositionInCellX + 2 * constants::kCellSizeX,
-      constants::kBlackPositionInCellY + 3 * constants::kCellSizeY));
+      constants::kBlackPositionInCellX + kMenuXOffset * constants::kCellSizeX,
+      constants::kBlackPositionInCellY + kMenuYOffset * constants::kCellSizeY));
 }
 
 MenuState::~MenuState() {}
@@ -53,6 +64,7 @@ void MenuState::Draw(sf::RenderWindow& window) {
 }
 
 GameStateType MenuState::Update(sf::Event& event, sf::RenderWindow& window) {
+  // Check if we make a click on text
   if (event.type == sf::Event::MouseButtonPressed) {
     if (event.key.code == sf::Mouse::Left) {
       if (black_figure_.GetSprite().getGlobalBounds().contains(

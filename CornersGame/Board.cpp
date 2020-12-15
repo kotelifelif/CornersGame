@@ -1,3 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "Board.h"
 
 #include <SFML/Graphics.hpp>
@@ -29,6 +34,12 @@ void Board::SetBusy(const int row, const int column, const bool is_busy) {
   cells_.at(row).at(column).is_busy = is_busy;
 }
 
+void Board::SetBusy(const int row, const int column, const bool is_busy,
+                    const FigureColor color) {
+  cells_.at(row).at(column).color = color;
+  cells_.at(row).at(column).is_busy = is_busy;
+}
+
 bool Board::GetBusy(const int row, const int column) const {
   return cells_.at(row).at(column).is_busy;
 }
@@ -45,11 +56,22 @@ bool Board::GetBusy(const sf::Vector2f& point) const {
 }
 
 void Board::SetBusy(const sf::Vector2f& point, const bool is_busy) {
-  // Maybe add find from std::algorithm
   for (auto& cell_row : cells_) {
     for (auto& cell : cell_row) {
       if (cell.rectangle.contains(point)) {
         cell.is_busy = is_busy;
+      }
+    }
+  }
+}
+
+void Board::SetBusy(const sf::Vector2f& point, const bool is_busy,
+                    const FigureColor color) {
+  for (auto& cell_row : cells_) {
+    for (auto& cell : cell_row) {
+      if (cell.rectangle.contains(point)) {
+        cell.is_busy = is_busy;
+        cell.color = color;
       }
     }
   }
@@ -70,27 +92,11 @@ Cell Board::GetCell(const sf::Vector2f& point) const {
   return Cell();
 }
 
-void Board::SetCollor(const int row, const int column,
-                      const FigureColor color) {
-  cells_.at(row).at(column).color = color;
-}
-
-void Board::SetCollor(const sf::Vector2f& point, const FigureColor color) {
-  for (auto& cell_row : cells_) {
-    for (auto& cell : cell_row) {
-      if (cell.rectangle.contains(point)) {
-        cell.color = color;
-      }
-    }
-  }
-}
 
 sf::Vector2f Board::ConvertToBoardPosition(const sf::Vector2f& point) {
-  // Maybe add find from std::algorithm
   for (auto& cell_row : cells_) {
     for (auto& cell : cell_row) {
       if (cell.rectangle.contains(point)) {
-        // Add constants
         sf::Vector2f board_position(cell.rectangle.left + constants::kXOffset,
                                     cell.rectangle.top + constants::kYOffset);
         return board_position;
@@ -111,7 +117,7 @@ sf::Vector2i Board::GetPointLocation(const sf::Vector2f& point) const {
   return sf::Vector2i(-1, -1);
 }
 
-sf::Vector2i Board::GetCellCoordinats(Cell cell) const {
+sf::Vector2i Board::GetCellCoordinates(Cell cell) const {
   for (size_t i = 0; i < cells_.size(); ++i) {
     for (size_t j = 0; j < cells_.size(); ++j) {
       if (cell == cells_[i][j]) {

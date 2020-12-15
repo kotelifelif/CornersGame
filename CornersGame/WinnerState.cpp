@@ -1,8 +1,18 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "WinnerState.h"
 
 #include "Constants.h"
 
-WinnerState::WinnerState(const bool is_player_win) {
+WinnerState::WinnerState(const bool is_player_win)
+    : kFontSize(24),
+      kCongratulatoryTextOffsetX(2),
+      kCongratulatoryTextOffsetY(3),
+      kMenuTextOffsetX(2),
+      kMenuTextOffsetY(4) {
   // Texture and Sprite for board
   board_texture_.loadFromFile("../images/board.png");
   board_ = Board(board_texture_, sf::Vector2i(constants::kInitialPositionX,
@@ -17,21 +27,21 @@ WinnerState::WinnerState(const bool is_player_win) {
     congratulatory_text_.setString(L"Победил компьютер!");
   }
 
-  congratulatory_text_.setCharacterSize(24);
-  congratulatory_text_.setPosition(sf::Vector2f(
-      constants::kBlackPositionInCellX +
-          constants::kCongratulatoryTextOffsetX * constants::kCellSizeX,
-      constants::kBlackPositionInCellY +
-          constants::kCongratulatoryTextOffsetY * constants::kCellSizeY));
+  congratulatory_text_.setCharacterSize(kFontSize);
+  congratulatory_text_.setPosition(
+      sf::Vector2f(constants::kBlackPositionInCellX +
+                       kCongratulatoryTextOffsetX * constants::kCellSizeX,
+                   constants::kBlackPositionInCellY +
+                       kCongratulatoryTextOffsetY * constants::kCellSizeY));
 
   menu_text_.setFont(font_);
   menu_text_.setString(L"Перейти в меню");
-  menu_text_.setCharacterSize(constants::kFontSize);
+  menu_text_.setCharacterSize(kFontSize);
   menu_text_.setPosition(
       sf::Vector2f(constants::kBlackPositionInCellX +
-                       constants::kMenuTextOffsetX * constants::kCellSizeX,
+                       kMenuTextOffsetX * constants::kCellSizeX,
                    constants::kBlackPositionInCellY +
-                       constants::kMenuTextOffsetY * constants::kCellSizeY));
+                       kMenuTextOffsetY * constants::kCellSizeY));
 }
 
 WinnerState::~WinnerState() {}

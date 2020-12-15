@@ -1,3 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "GameState.h"
 #include "AI.h"
 
@@ -7,7 +12,7 @@
 
 GameState::GameState(bool is_white)
     : is_white_(is_white),
-      ai_(!is_white_),
+      ai_(!is_white),
       x_offset_(0),
       y_offset_(0),
       figure_number_(0) {
@@ -83,10 +88,10 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
           if (person_figures[i].GetSprite().getGlobalBounds().contains(
                   mouse_position.x, mouse_position.y)) {
             figure_number_ = i;
-            x_offset_ = mouse_position.x -
-                       person_figures[i].GetSprite().getPosition().x;
-            y_offset_ = mouse_position.y -
-                       person_figures[i].GetSprite().getPosition().y;
+            x_offset_ = static_cast<int>(mouse_position.x -
+                       person_figures[i].GetSprite().getPosition().x);
+            y_offset_ = static_cast<int>(mouse_position.y -
+                       person_figures[i].GetSprite().getPosition().y);
             old_position_ = person_figures[i].GetSprite().getPosition();
           }
         }
@@ -105,26 +110,16 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
         y_offset_ = abs(mouse_position_coordinates.y - old_position_coordinates.y);
         if ((!board_.GetBusy(new_position_)) &&
             ((x_offset_ == 1 && y_offset_ == 0) || (y_offset_ == 1 && x_offset_ == 0))) {
-          board_.SetBusy(old_position_, false);
-          board_.SetBusy(new_position_, true);
-          board_.SetCollor(old_position_, FigureColor::kNone);
+          board_.SetBusy(old_position_, false, FigureColor::kNone);
           if (is_white_) {
-            board_.SetCollor(new_position_, FigureColor::kWhite);
+            board_.SetBusy(new_position_, true, FigureColor::kWhite);
           } else {
-            board_.SetCollor(new_position_, FigureColor::kBlack);
+            board_.SetBusy(new_position_, true, FigureColor::kBlack);
           }
           new_position_ = board_.ConvertToBoardPosition(new_position_);
           person_player_.SetFigurePosition(figure_number_, new_position_);
           is_player_move_ = false;
         }
-      }
-    }
-
-    if (event.type == sf::Event::KeyPressed) {
-      if (event.key.code == sf::Keyboard::Up) {
-        return GameStateType::kComputerWinnerState;
-      } else if (event.key.code == sf::Keyboard::Down) {
-        return GameStateType::kPlayerWinnerState;
       }
     }
   } else {
@@ -133,22 +128,17 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
     ai_.FindBestMove(board_, ai_player_, 0);
     std::pair<sf::Vector2i, int> optimal_path = ai_.GetMove(board_, ai_player_);
 
-    Cell position = board_.GetCell(optimal_path.first.x, optimal_path.first.y);
-    new_position_ = sf::Vector2f(position.rectangle.left + constants::kXOffset,
-                                position.rectangle.top + constants::kYOffset);
+    board_.SetBusy(ai_figures[optimal_path.second].GetPosition(), false, FigureColor::kNone);
 
-    board_.SetBusy(ai_figures[optimal_path.second].GetPosition(), false);
-    board_.SetCollor(ai_figures[optimal_path.second].GetPosition(),
-                     FigureColor::kNone);
-    ai_player_.SetFigurePosition(optimal_path.second, new_position_);
+    ai_player_.SetFigurePosition(board_, optimal_path.second,
+                                 optimal_path.first.x, optimal_path.first.y);
 
-    board_.SetBusy(new_position_, true);
+    board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true);
     if (is_white_) {
-      board_.SetCollor(new_position_, FigureColor::kWhite);
+      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true, FigureColor::kWhite); 
     } else {
-      board_.SetCollor(new_position_, FigureColor::kBlack);
+      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true, FigureColor::kBlack);
     }
-
     is_player_move_ = true;
   }
 
@@ -167,15 +157,10 @@ std::vector<Figure> GameState::InitializeFigures(
           sf::Vector2f(initial_position.x + i * constants::kCellSizeX,
                        initial_position.y + j * constants::kCellSizeY));
       if (is_left_top) {
-        player_figure.SetTargetCell(board.GetCell(constants::kRows - i - 1,
-                                                  constants::kColumns - j - 1));
-        board.SetBusy(i, j, true);
-        board.SetCollor(i, j, FigureColor::kBlack);
+        board.SetBusy(i, j, true, FigureColor::kBlack);
       } else {
-        player_figure.SetTargetCell(board.GetCell(i, j));
         board.SetBusy(constants::kRows - i - 1, constants::kColumns - j - 1,
-                      true);
-        board.SetCollor(i, j, FigureColor::kWhite);
+                      true, FigureColor::kWhite);
       }
       figures.push_back(player_figure);
     }
@@ -184,35 +169,34 @@ std::vector<Figure> GameState::InitializeFigures(
 }
 
 GameStateType GameState::CheckWinner() {
-  int figures_in_target_cell_count = 0;
+  int person_points = 0;
+  int ai_points = 0;
   Cell cell;
+  
   for (int i = 0; i < constants::kFigureRows; ++i) {
     for (int j = 0; j < constants::kFigureColumns; ++j) {
       if (is_white_ && board_.GetCell(i, j).color == FigureColor::kWhite) {
-        ++figures_in_target_cell_count;
+        ++person_points;
       } else if (!is_white_ && board_.GetCell((constants::kRows - i - 1),
                                               (constants::kColumns - j - 1))
                                        .color == FigureColor::kBlack) {
-        ++figures_in_target_cell_count;
+        ++person_points;
+      } else if (!is_white_ &&
+                 board_.GetCell(i, j).color == FigureColor::kWhite) {
+        ++ai_points;
+      } else if (is_white_ && board_.GetCell((constants::kRows - i - 1),
+                                             (constants::kColumns - j - 1))
+                                      .color == FigureColor::kBlack) {
+        ++ai_points;
       }
     }
   }
 
-  if (figures_in_target_cell_count ==
-      constants::kFigureRows * constants::kFigureColumns) {
+  if (person_points == constants::kFigureRows * constants::kFigureColumns) {
     return GameStateType::kPlayerWinnerState;
   }
 
-  figures_in_target_cell_count = 0;
-  for (auto& figure : ai_player_.GetFigures()) {
-    cell = board_.GetCell(figure.GetPosition());
-    if (figure.GetTargetCell() == cell) {
-      ++figures_in_target_cell_count;
-    }
-  }
-
-  if (figures_in_target_cell_count ==
-      constants::kFigureRows * constants::kFigureColumns) {
+  if (ai_points == constants::kFigureRows * constants::kFigureColumns) {
     return GameStateType::kComputerWinnerState;
   }
 

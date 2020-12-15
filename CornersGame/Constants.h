@@ -31,15 +31,4 @@ constexpr int kColumns = 8;
 
 constexpr int kInitialPositionX = 28;
 constexpr int kInitialPositionY = 28;
-
-constexpr int kMenuBlackFigureOffsetX = 3;
-constexpr int kMenuBlackFigureOffsetY = 4;
-constexpr int kMenuWhiteFigureOffsetX = 4;
-constexpr int kMenuWhiteFigureOffsetY = 4;
-
-constexpr int kCongratulatoryTextOffsetX = 2;
-constexpr int kCongratulatoryTextOffsetY = 3;
-constexpr int kMenuTextOffsetX = 2;
-constexpr int kMenuTextOffsetY = 4;
-constexpr int kFontSize = 24;
 }  // namespace constants

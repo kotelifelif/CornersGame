@@ -1,9 +1,16 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "Player.h"
 #include "Board.h"
 
 #include <algorithm>
 
 #include <SFML/Graphics.hpp> 
+
+#include "Constants.h"
 
 Player::Player() {}
 
@@ -24,6 +31,16 @@ Figure Player::GetFigure(const int position) const {
 void Player::SetFigurePosition(const int figure_number,
                                const sf::Vector2f& screen_position) {
   figures_.at(figure_number).SetPosition(screen_position);
+}
+
+void Player::SetFigurePosition(Board& board, const int figure_position,
+                               const int row, const int column) {
+  Cell position = board.GetCell(row, column);
+  sf::Vector2f new_position =
+      sf::Vector2f(position.rectangle.left + constants::kXOffset,
+                   position.rectangle.top + constants::kYOffset);
+  SetFigurePosition(figure_position, new_position);
+  
 }
 
 

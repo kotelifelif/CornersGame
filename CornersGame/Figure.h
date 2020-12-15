@@ -1,15 +1,13 @@
 #pragma once
 #include "Board.h"
 
-#include <string>
-
 #include <SFML/Graphics.hpp>
 
 class Figure {
  public:
   Figure();
   Figure(const sf::Texture& texture, const sf::IntRect& rectangle,
-         const sf::Vector2f& offset, const Cell& target_cell_ = Cell());
+         const sf::Vector2f& offset);
   void Draw(sf::RenderWindow& window) const;
 
   void SetPosition(const sf::Vector2f& position);
@@ -17,12 +15,8 @@ class Figure {
 
   sf::Sprite GetSprite() const;
 
-  void SetTargetCell(const Cell& cell);
-  Cell GetTargetCell() const;
-
  private:
   sf::Sprite sprite_;
   sf::Texture texture_;
-  Cell target_cell_;
 };
 

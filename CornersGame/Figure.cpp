@@ -1,12 +1,15 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "Figure.h"
 
 Figure::Figure() {}
 
 Figure::Figure(const sf::Texture& texture, const sf::IntRect& rectangle,
-               const sf::Vector2f& offset, const Cell& target_cell_)
-    : texture_(texture),
-      sprite_(texture, rectangle),
-      target_cell_(target_cell_) {
+               const sf::Vector2f& offset)
+    : texture_(texture), sprite_(texture, rectangle) {
   sprite_.move(offset);
 }
 
@@ -19,7 +22,3 @@ void Figure::SetPosition(const sf::Vector2f& position) {
 sf::Vector2f Figure::GetPosition() const { return sprite_.getPosition(); }
 
 sf::Sprite Figure::GetSprite() const { return sprite_; }
-
-void Figure::SetTargetCell(const Cell& cell) { target_cell_ = cell; }
-
-Cell Figure::GetTargetCell() const { return target_cell_; }

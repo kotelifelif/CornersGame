@@ -1,11 +1,13 @@
-#include "Player.h"
-#include "Board.h"
-#include "AI.h"
+// This is a personal academic project. Dear PVS-Studio, please check it.
 
-#include "GameState.h"
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "MenuState.h"
-#include "WinnerState.h"
 #include "GameContext.h"
+#include "State.h"
+
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
@@ -19,7 +21,7 @@ int main() {
       sf::VideoMode(constants::kWindowWidth, constants::kWindowHeight),
       kWindowName);
 
-  GameContext context(new MenuState());
+  GameContext context(std::make_unique<MenuState>());
 
   while (window.isOpen()) {
     sf::Event event;

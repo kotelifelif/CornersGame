@@ -1,3 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+
 #include "GameContext.h"
 #include "GameState.h"
 #include "MenuState.h"
@@ -13,6 +18,8 @@ void GameContext::Draw(sf::RenderWindow& window) { state_->Draw(window); }
 void GameContext::Update(sf::Event& event, sf::RenderWindow& window) {
   state_type_ = state_->Update(event, window);
   switch (state_type_) {
+    case GameStateType::kNoState:
+      break;
     case GameStateType::kBlackGameState:
       ChangeStateType(std::make_unique<GameState>(false));
       break;

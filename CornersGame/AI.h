@@ -28,7 +28,7 @@ class AI {
   bool is_black_;
   int figure_number_;
   Move move_;
-  sf::Vector2i destination_coordinats_;
+  sf::Vector2i destination_coordinates_;
   int GetHeuristic(Board& board, Player& player);
   int CheckMove(Board& board, Player& player, sf::Vector2i& old_coordinates,
                  const sf::Vector2i& new_coordinates, int depth, int sum_distance,

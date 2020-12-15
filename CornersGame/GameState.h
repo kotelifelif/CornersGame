@@ -21,8 +21,8 @@ class GameState : public State {
   
   bool is_player_move_;
   int figure_number_;
-  float x_offset_;
-  float y_offset_;
+  int x_offset_;
+  int y_offset_;
   sf::Vector2f new_position_;
   sf::Vector2f old_position_;
 
