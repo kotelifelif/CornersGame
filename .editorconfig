@@ -1,0 +1,4 @@
+# Созданный Visual Studio файл EDITORCONFIG с параметрами C++.
+
+[*.{c++,cc,cpp,cppm,cxx,h,h++,hh,hpp,hxx,inl,ipp,ixx,tlh,tli}]
+vc_generate_documentation_comments = xml
