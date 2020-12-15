@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "WinnerState.h"
 
 #include "Constants.h"
@@ -46,7 +41,7 @@ WinnerState::WinnerState(const bool is_player_win)
 
 WinnerState::~WinnerState() {}
 
-void WinnerState::Draw(sf::RenderWindow& window) {
+void WinnerState::Draw(sf::RenderWindow& window) const {
   board_.Draw(window);
   window.draw(congratulatory_text_);
   window.draw(menu_text_);

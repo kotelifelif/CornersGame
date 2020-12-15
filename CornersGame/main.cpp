@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "MenuState.h"
 #include "GameContext.h"
 #include "State.h"
@@ -16,10 +11,9 @@
 
 
 int main() {
-  const std::string kWindowName("The Corners game");
   sf::RenderWindow window(
       sf::VideoMode(constants::kWindowWidth, constants::kWindowHeight),
-      kWindowName);
+      "The Corners game");
 
   GameContext context(std::make_unique<MenuState>());
 

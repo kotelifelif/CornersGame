@@ -18,7 +18,7 @@ class GameState : public State {
  private:
   AI ai_;
   bool is_white_;
-  
+
   bool is_player_move_;
   int figure_number_;
   int x_offset_;
@@ -28,12 +28,12 @@ class GameState : public State {
 
   sf::Texture board_texture_;
   sf::Texture figure_texture_;
-  
+
   Board board_;
-  
+
   Player person_player_;
   Player ai_player_;
-  
+
   std::vector<Figure> InitializeFigures(const sf::Texture& texture,
                                         const sf::IntRect& rectangle,
                                         const sf::Vector2i& initial_position,

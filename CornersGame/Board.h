@@ -18,9 +18,9 @@ class Board {
  public:
   Board(const sf::Texture& texture, const sf::Vector2i& initial_position);
   Board();
-  
+
   void Draw(sf::RenderWindow& window) const;
-  
+
   void SetBusy(const int row, const int column, const bool is_busy);
   void SetBusy(const int row, const int column, const bool is_busy,
                const FigureColor color);
@@ -28,8 +28,8 @@ class Board {
 
   bool GetBusy(const sf::Vector2f& point) const;
   void SetBusy(const sf::Vector2f& point, const bool is_busy);
-  void SetBusy(const sf::Vector2f& point, const bool is_busy, const FigureColor color);
-
+  void SetBusy(const sf::Vector2f& point, const bool is_busy,
+               const FigureColor color);
 
   Cell GetCell(const int row, const int column) const;
   Cell GetCell(const sf::Vector2f& point) const;

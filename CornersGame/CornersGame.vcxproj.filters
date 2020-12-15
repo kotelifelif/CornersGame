@@ -39,9 +39,6 @@
     <ClCompile Include="WinnerState.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="GameContext.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

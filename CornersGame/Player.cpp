@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "Player.h"
 #include "Board.h"
 
@@ -40,7 +35,6 @@ void Player::SetFigurePosition(Board& board, const int figure_position,
       sf::Vector2f(position.rectangle.left + constants::kXOffset,
                    position.rectangle.top + constants::kYOffset);
   SetFigurePosition(figure_position, new_position);
-  
 }
 
 

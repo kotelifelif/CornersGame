@@ -154,7 +154,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="State.cpp" />
     <ClCompile Include="WinnerState.cpp" />
   </ItemGroup>
   <ItemGroup>

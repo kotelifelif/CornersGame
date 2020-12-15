@@ -8,17 +8,17 @@ class WinnerState : public State {
  public:
   WinnerState(const bool is_player_win);
   virtual ~WinnerState();
-  void Draw(sf::RenderWindow& window) override;
+  void Draw(sf::RenderWindow& window) const override;
   GameStateType Update(sf::Event& event, sf::RenderWindow& window) override;
 
  private:
   sf::Font font_;
   sf::Text congratulatory_text_;
   sf::Text menu_text_;
-  
+
   sf::Texture board_texture_;
   Board board_;
-  
+
   const int kFontSize;
   const int kCongratulatoryTextOffsetX = 2;
   const int kCongratulatoryTextOffsetY = 3;

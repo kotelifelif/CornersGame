@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "GameState.h"
 #include "AI.h"
 
@@ -88,10 +83,12 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
           if (person_figures[i].GetSprite().getGlobalBounds().contains(
                   mouse_position.x, mouse_position.y)) {
             figure_number_ = i;
-            x_offset_ = static_cast<int>(mouse_position.x -
-                       person_figures[i].GetSprite().getPosition().x);
-            y_offset_ = static_cast<int>(mouse_position.y -
-                       person_figures[i].GetSprite().getPosition().y);
+            x_offset_ =
+                static_cast<int>(mouse_position.x -
+                                 person_figures[i].GetSprite().getPosition().x);
+            y_offset_ =
+                static_cast<int>(mouse_position.y -
+                                 person_figures[i].GetSprite().getPosition().y);
             old_position_ = person_figures[i].GetSprite().getPosition();
           }
         }
@@ -106,10 +103,13 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
             board_.GetPointLocation(old_position_);
         sf::Vector2i mouse_position_coordinates = board_.GetPointLocation(
             sf::Vector2f(sf::Mouse::getPosition(window)));
-        x_offset_ = abs(mouse_position_coordinates.x - old_position_coordinates.x);
-        y_offset_ = abs(mouse_position_coordinates.y - old_position_coordinates.y);
+        x_offset_ =
+            abs(mouse_position_coordinates.x - old_position_coordinates.x);
+        y_offset_ =
+            abs(mouse_position_coordinates.y - old_position_coordinates.y);
         if ((!board_.GetBusy(new_position_)) &&
-            ((x_offset_ == 1 && y_offset_ == 0) || (y_offset_ == 1 && x_offset_ == 0))) {
+            ((x_offset_ == 1 && y_offset_ == 0) ||
+             (y_offset_ == 1 && x_offset_ == 0))) {
           board_.SetBusy(old_position_, false, FigureColor::kNone);
           if (is_white_) {
             board_.SetBusy(new_position_, true, FigureColor::kWhite);
@@ -126,18 +126,21 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
     window.setTitle("Computer move!");
     std::vector<Figure> ai_figures = ai_player_.GetFigures();
     ai_.FindBestMove(board_, ai_player_, 0);
-    std::pair<sf::Vector2i, int> optimal_path = ai_.GetMove(board_, ai_player_);
+    std::pair<sf::Vector2i, int> optimal_path = ai_.GetMove();
 
-    board_.SetBusy(ai_figures[optimal_path.second].GetPosition(), false, FigureColor::kNone);
+    board_.SetBusy(ai_figures[optimal_path.second].GetPosition(), false,
+                   FigureColor::kNone);
 
     ai_player_.SetFigurePosition(board_, optimal_path.second,
                                  optimal_path.first.x, optimal_path.first.y);
 
     board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true);
     if (is_white_) {
-      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true, FigureColor::kWhite); 
+      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true,
+                     FigureColor::kWhite);
     } else {
-      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true, FigureColor::kBlack);
+      board_.SetBusy(optimal_path.first.x, optimal_path.first.y, true,
+                     FigureColor::kBlack);
     }
     is_player_move_ = true;
   }
@@ -148,7 +151,8 @@ GameStateType GameState::Update(sf::Event& event, sf::RenderWindow& window) {
 
 std::vector<Figure> GameState::InitializeFigures(
     const sf::Texture& texture, const sf::IntRect& rectangle,
-    const sf::Vector2i& initial_position, Board& board, const bool is_left_top) {
+    const sf::Vector2i& initial_position, Board& board,
+    const bool is_left_top) {
   std::vector<Figure> figures;
   for (int i = 0; i < constants::kFigureRows; ++i) {
     for (int j = 0; j < constants::kFigureColumns; ++j) {
@@ -172,7 +176,7 @@ GameStateType GameState::CheckWinner() {
   int person_points = 0;
   int ai_points = 0;
   Cell cell;
-  
+
   for (int i = 0; i < constants::kFigureRows; ++i) {
     for (int j = 0; j < constants::kFigureColumns; ++j) {
       if (is_white_ && board_.GetCell(i, j).color == FigureColor::kWhite) {

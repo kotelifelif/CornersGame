@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "MenuState.h"
 
 #include "Constants.h"
@@ -16,7 +11,6 @@ MenuState::MenuState()
       kMenuBlackFigureOffsetY(4),
       kMenuWhiteFigureOffsetX(4),
       kMenuWhiteFigureOffsetY(4) {
-  
   // Texture and Sprite for board
   board_texture_.loadFromFile("../images/board.png");
   board_ = Board(board_texture_, sf::Vector2i(constants::kInitialPositionX,
@@ -56,7 +50,7 @@ MenuState::MenuState()
 
 MenuState::~MenuState() {}
 
-void MenuState::Draw(sf::RenderWindow& window) {
+void MenuState::Draw(sf::RenderWindow& window) const {
   board_.Draw(window);
   black_figure_.Draw(window);
   white_figure_.Draw(window);

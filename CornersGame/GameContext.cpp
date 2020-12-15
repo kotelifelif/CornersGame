@@ -1,8 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// http://www.viva64.com
-
 #include "GameContext.h"
 #include "GameState.h"
 #include "MenuState.h"
@@ -13,9 +8,13 @@ GameContext::GameContext(std::unique_ptr<State> state)
 
 GameContext::~GameContext() {}
 
-void GameContext::Draw(sf::RenderWindow& window) { state_->Draw(window); }
+void GameContext::Draw(sf::RenderWindow& window) const { state_->Draw(window); }
 
 void GameContext::Update(sf::Event& event, sf::RenderWindow& window) {
+  if (state_ == nullptr) {
+    return;
+  }
+
   state_type_ = state_->Update(event, window);
   switch (state_type_) {
     case GameStateType::kNoState:
@@ -33,8 +32,8 @@ void GameContext::Update(sf::Event& event, sf::RenderWindow& window) {
       ChangeStateType(std::make_unique<WinnerState>(true));
       break;
     case GameStateType::kComputerWinnerState:
-        ChangeStateType(std::make_unique<WinnerState>(false));
-        break;
+      ChangeStateType(std::make_unique<WinnerState>(false));
+      break;
   }
 }
 
